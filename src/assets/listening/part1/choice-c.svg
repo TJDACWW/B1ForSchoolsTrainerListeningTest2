@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-labelledby="title desc">
+  <title id="title">Choice C placeholder</title>
+  <desc id="desc">Neutral placeholder image for option C.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e8f1db"/>
+      <stop offset="100%" stop-color="#f2e3ef"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="360" rx="32" fill="url(#bg)"/>
+  <circle cx="248" cy="88" r="52" fill="#ffffff" opacity="0.45"/>
+  <rect x="60" y="114" width="152" height="184" rx="24" fill="#ffffff" opacity="0.68"/>
+  <text x="240" y="198" text-anchor="middle" font-family="Arial, sans-serif" font-size="124" font-weight="700" fill="#304b33">C</text>
+</svg>

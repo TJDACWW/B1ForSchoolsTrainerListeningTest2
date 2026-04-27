@@ -1,0 +1,26 @@
+<div class="selection-dashboard">
+  <h1>Test Selection</h1>
+  <form id="testSelector">
+    <div class="form-group">
+      <label for="level">Level:</label>
+      <select id="level" name="level">
+        <option value="">-- Select Level --</option>
+        <option value="starters">Starters</option>
+        <option value="movers">Movers</option>
+        <option value="flyers">Flyers</option>
+        <option value="a2-key">A2 Key (KET)</option>
+        <option value="b1-preliminary">B1 Preliminary (PET)</option>
+        <option value="b2-first">B2 First (FCE)</option>
+        <option value="c1-advanced">C1 Advanced (CAE)</option>
+        <option value="c2-proficiency">C2 Proficiency (CPE)</option>
+      </select>
+    </div>
+    <div class="form-group" id="testNumberGroup">
+      <!-- This will be populated dynamically based on the selected level -->
+    </div>
+    <div class="form-group" id="componentGroup">
+      <!-- This will also be populated dynamically -->
+    </div>
+    <button type="submit">Select and Edit Test</button>
+  </form>
+</div>

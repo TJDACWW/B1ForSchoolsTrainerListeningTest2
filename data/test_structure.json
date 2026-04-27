@@ -1,0 +1,22 @@
+{
+  "levels": {
+    "starters": {
+      "name": "Starters",
+      "tests": {
+        "1": {
+          "Listening": [
+            { "id": 1, "question": "...", "options": ["A", "B"], "correctAnswer": "A" },
+            ...
+          ],
+          "Reading & Writing": [...]
+        },
+        ...
+      }
+    },
+    "movers": {
+      "name": "Movers",
+      "tests": { ... }
+    },
+    // Other levels...
+  }
+}
