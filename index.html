@@ -4,15 +4,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>B1 Listening Test</title>
-  <meta http-equiv="refresh" content="0; url=exercise1.html">
-  <script>
-    window.location.replace('exercise1.html');
-  </script>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      overflow: hidden;
+      background: #f8f6f1;
+    }
+
+    .app-frame {
+      display: block;
+      width: 100%;
+      height: 100vh;
+      border: 0;
+    }
+  </style>
 </head>
 <body>
-  <p>
-    If you are not redirected automatically, open
-    <a href="exercise1.html">exercise1.html</a>.
-  </p>
+  <iframe
+    class="app-frame"
+    src="exercise1.html"
+    title="B1 Listening Test"
+    loading="eager"
+  ></iframe>
 </body>
 </html>
