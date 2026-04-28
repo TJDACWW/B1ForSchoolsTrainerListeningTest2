@@ -55,6 +55,17 @@ function optionHasImage(options) {
   return normalizeOptions(options).some(option => Boolean(option.image));
 }
 
+function resolvePreviewImagePath(imagePath, testData, question) {
+  const raw = String(imagePath == null ? '' : imagePath).trim();
+  if (!raw) return '';
+  if (String(question && question.part ? question.part : '') !== 'part1') return '';
+  if (/^(?:data:|blob:|https?:|file:)/i.test(raw)) return raw;
+  if (/^(?:\/|\.\/|\.\.\/|src\/)/.test(raw)) return raw;
+  const slug = String(testData && testData.assetSlug ? testData.assetSlug : '').trim();
+  if (slug && slug !== 'legacy') return `src/assets/listening/${slug}/part1/${raw.replace(/^\/+/, '')}`;
+  return `src/assets/listening/part1/${raw.replace(/^\/+/, '')}`;
+}
+
 function makeImageFallback(label) {
   const safeLabel = escapeHtml(label || '');
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-label="Missing image">
@@ -111,9 +122,10 @@ class PreviewHandler {
       const key = option.label || optionKey(index);
       const isCorrect = String(question.correctAnswer || '').trim() === String(key).trim();
       const text = option.text ? `<span class="preview-option-text">${escapeHtml(option.text)}</span>` : '';
-      const image = option.image ? `
+      const resolvedImage = resolvePreviewImagePath(option.image, this.currentTestData, question);
+      const image = resolvedImage ? `
         <span class="preview-option-media">
-          <img src="${escapeHtml(option.image)}" alt="${escapeHtml(option.alt || `${key} option`)}" onerror="this.onerror=null;this.src='${makeImageFallback(key)}'">
+          <img src="${escapeHtml(resolvedImage)}" alt="${escapeHtml(option.alt || `${key} option`)}" onerror="this.onerror=null;this.src='${makeImageFallback(key)}'">
         </span>` : '';
 
       return `
@@ -182,7 +194,8 @@ class PreviewHandler {
     testContainer.className = 'test-container';
 
     const header = document.createElement('header');
-    header.innerHTML = `<h2>${escapeHtml(this.currentTestData.level || '')} - Test ${escapeHtml(this.currentTestData.testNumber || '')}</h2>`;
+    const testLabel = this.currentTestData.testTitle || this.currentTestData.testLabel || this.currentTestData.testNumber || '';
+    header.innerHTML = `<h2>${escapeHtml(this.currentTestData.level || '')} - ${escapeHtml(testLabel)}</h2>`;
     testContainer.appendChild(header);
 
     const componentTitle = document.createElement('h3');

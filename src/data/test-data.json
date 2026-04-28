@@ -32,6 +32,616 @@
   ],
   "tests": [
     {
+      "testId": "b1-listening-test-1",
+      "assetSlug": "legacy",
+      "testNumber": 1,
+      "levelKey": "b1-preliminary",
+      "component": "Listening",
+      "title": "B1 Listening Test 1",
+      "questions": [
+        {
+          "id": 1,
+          "part": "part1",
+          "questionNumber": 1,
+          "type": "image-choice",
+          "questionText": "Where did the boy find his mobile phone?",
+          "options": [
+            { "label": "A", "image": "1A.jpg", "alt": "Choice A" },
+            { "label": "B", "image": "1B.jpeg", "alt": "Choice B" },
+            { "label": "C", "image": "1C.jpg", "alt": "Choice C" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 2,
+          "part": "part1",
+          "questionNumber": 2,
+          "type": "image-choice",
+          "questionText": "Which program does the girl want to watch?",
+          "options": [
+            { "label": "A", "image": "2A.jpeg", "alt": "Choice A" },
+            { "label": "B", "image": "2B.jpg", "alt": "Choice B" },
+            { "label": "C", "image": "2C.jpg", "alt": "Choice C" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 3,
+          "part": "part1",
+          "questionNumber": 3,
+          "type": "image-choice",
+          "questionText": "Which animals did the girl enjoy seeing the most?",
+          "options": [
+            { "label": "A", "image": "3A.jpeg", "alt": "Choice A" },
+            { "label": "B", "image": "3B.jpg", "alt": "Choice B" },
+            { "label": "C", "image": "3C.jpg", "alt": "Choice C" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 4,
+          "part": "part1",
+          "questionNumber": 4,
+          "type": "image-choice",
+          "questionText": "What will the boy look like in his school play?",
+          "options": [
+            { "label": "A", "image": "4A.png", "alt": "Choice A" },
+            { "label": "B", "image": "4B.jpg", "alt": "Choice B" },
+            { "label": "C", "image": "4C.jpg", "alt": "Choice C" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 5,
+          "part": "part1",
+          "questionNumber": 5,
+          "type": "image-choice",
+          "questionText": "What's the weather going to be like tomorrow?",
+          "options": [
+            { "label": "A", "image": "5A.jpg", "alt": "Choice A" },
+            { "label": "B", "image": "5B.jpeg", "alt": "Choice B" },
+            { "label": "C", "image": "5C.jpeg", "alt": "Choice C" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 6,
+          "part": "part1",
+          "questionNumber": 6,
+          "type": "image-choice",
+          "questionText": "Where does the girl want to meet her friend?",
+          "options": [
+            { "label": "A", "image": "6A.png", "alt": "Choice A" },
+            { "label": "B", "image": "6B.jpg", "alt": "Choice B" },
+            { "label": "C", "image": "6C.jpg", "alt": "Choice C" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 7,
+          "part": "part1",
+          "questionNumber": 7,
+          "type": "image-choice",
+          "questionText": "How much did the book cost?",
+          "options": [
+            { "label": "A", "image": "7A.jpg", "alt": "Choice A" },
+            { "label": "B", "image": "7B.jpg", "alt": "Choice B" },
+            { "label": "C", "image": "7C.jpg", "alt": "Choice C" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 8,
+          "part": "part2",
+          "questionNumber": 8,
+          "type": "multiple-choice",
+          "questionText": "You will hear two friends talking about a music performance. The friends agree that",
+          "options": [
+            { "label": "A", "text": "the concert hall was too big." },
+            { "label": "B", "text": "the performance was too short." },
+            { "label": "C", "text": "the musicians needed more practice." }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 9,
+          "part": "part2",
+          "questionNumber": 9,
+          "type": "multiple-choice",
+          "questionText": "You will hear two friends talking about a play they have seen recently. What surprised the girl about the play?",
+          "options": [
+            { "label": "A", "text": "how young the audience was" },
+            { "label": "B", "text": "how unusual the ending was" },
+            { "label": "C", "text": "how good the acting was" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 10,
+          "part": "part2",
+          "questionNumber": 10,
+          "type": "multiple-choice",
+          "questionText": "You will hear a boy telling a friend about an art course he went on. What did the boy enjoy most about it?",
+          "options": [
+            { "label": "A", "text": "the strong focus on drawing and painting" },
+            { "label": "B", "text": "the teacher's sense of humour" },
+            { "label": "C", "text": "the variety of practice activities" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 11,
+          "part": "part2",
+          "questionNumber": 11,
+          "type": "multiple-choice",
+          "questionText": "You will hear two friends talking about getting to school. The girl thinks that walking to school with her friends",
+          "options": [
+            { "label": "A", "text": "is a good way to be sociable." },
+            { "label": "B", "text": "takes longer than walking alone." },
+            { "label": "C", "text": "causes problems for other pedestrians." }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 12,
+          "part": "part2",
+          "questionNumber": 12,
+          "type": "multiple-choice",
+          "questionText": "You will hear a boy talking to a friend about his new house. How does the boy feel about it?",
+          "options": [
+            { "label": "A", "text": "pleased with its location" },
+            { "label": "B", "text": "amazed at how big it is" },
+            { "label": "C", "text": "satisfied with how it's decorated" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 13,
+          "part": "part2",
+          "questionNumber": 13,
+          "type": "multiple-choice",
+          "questionText": "You will hear a girl talking about a day out with her family. Why did the girl's family choose to go to the river?",
+          "options": [
+            { "label": "A", "text": "There are many things to do." },
+            { "label": "B", "text": "It's close to where they live." },
+            { "label": "C", "text": "It's a good place for a picnic." }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 14,
+          "part": "part3",
+          "questionNumber": 14,
+          "type": "gap-fill",
+          "questionText": "The subject of this year's competition is",
+          "answer": ""
+        },
+        {
+          "id": 15,
+          "part": "part3",
+          "questionNumber": 15,
+          "type": "gap-fill",
+          "questionText": "Photos must show some",
+          "answer": ""
+        },
+        {
+          "id": 16,
+          "part": "part3",
+          "questionNumber": 16,
+          "type": "gap-fill",
+          "questionText": "A local",
+          "answer": ""
+        },
+        {
+          "id": 17,
+          "part": "part3",
+          "questionNumber": 17,
+          "type": "gap-fill",
+          "questionText": "First prize is a photography",
+          "answer": ""
+        },
+        {
+          "id": 18,
+          "part": "part3",
+          "questionNumber": 18,
+          "type": "gap-fill",
+          "questionText": "Send your entries in by",
+          "answer": ""
+        },
+        {
+          "id": 19,
+          "part": "part3",
+          "questionNumber": 19,
+          "type": "gap-fill",
+          "questionText": "School secretary's email address is k.",
+          "answer": ""
+        },
+        {
+          "id": 20,
+          "part": "part4",
+          "questionNumber": 20,
+          "type": "multiple-choice",
+          "questionText": "You will hear an interview with a 15-year-old boy called Callum, who runs a successful book review website for teenagers. How did Callum learn about setting up a website?",
+          "options": [
+            { "label": "A", "text": "through lessons at school" },
+            { "label": "B", "text": "by using information online" },
+            { "label": "C", "text": "a family member taught him" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 21,
+          "part": "part4",
+          "questionNumber": 21,
+          "type": "multiple-choice",
+          "questionText": "Why did Callum decide to set up a book review website?",
+          "options": [
+            { "label": "A", "text": "to develop teenagers' writing skills" },
+            { "label": "B", "text": "to encourage teenagers to read more" },
+            { "label": "C", "text": "to create an online discussion among teenagers" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 22,
+          "part": "part4",
+          "questionNumber": 22,
+          "type": "multiple-choice",
+          "questionText": "How did Callum feel when his site first went online?",
+          "options": [
+            { "label": "A", "text": "pleased with its quality" },
+            { "label": "B", "text": "certain it would be popular" },
+            { "label": "C", "text": "positive it would achieve its aims" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 23,
+          "part": "part4",
+          "questionNumber": 23,
+          "type": "multiple-choice",
+          "questionText": "What does Callum say about a typical day?",
+          "options": [
+            { "label": "A", "text": "It's usually full of variety." },
+            { "label": "B", "text": "It's always extremely busy." },
+            { "label": "C", "text": "It's impossible to predict what will happen." }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 24,
+          "part": "part4",
+          "questionNumber": 24,
+          "type": "multiple-choice",
+          "questionText": "When Callum is eighteen he'd like to",
+          "options": [
+            { "label": "A", "text": "work for a big company." },
+            { "label": "B", "text": "study for a degree." },
+            { "label": "C", "text": "run a business." }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 25,
+          "part": "part4",
+          "questionNumber": 25,
+          "type": "multiple-choice",
+          "questionText": "What is Callum's new website for?",
+          "options": [
+            { "label": "A", "text": "using music to help people" },
+            { "label": "B", "text": "presenting new music" },
+            { "label": "C", "text": "learning how to play music" }
+          ],
+          "correctAnswer": ""
+        }
+      ]
+    },
+    {
+      "testId": "b1-listening-test-2",
+      "assetSlug": "pet-test-2",
+      "testNumber": 2,
+      "levelKey": "b1-preliminary",
+      "component": "Listening",
+      "title": "B1 Succeed Listening Test 1",
+      "questions": [
+        {
+          "id": 1,
+          "part": "part1",
+          "questionNumber": 1,
+          "type": "image-choice",
+          "questionText": "How did the woman travel to?",
+          "options": [
+            { "label": "A", "image": "1A.svg", "alt": "Cookie" },
+            { "label": "B", "image": "1B.svg", "alt": "Apple" },
+            { "label": "C", "image": "1C.svg", "alt": "Sandwich" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 2,
+          "part": "part1",
+          "questionNumber": 2,
+          "type": "image-choice",
+          "questionText": "What time does the film start?",
+          "options": [
+            { "label": "A", "image": "2A.svg", "alt": "Drama club" },
+            { "label": "B", "image": "2B.svg", "alt": "Chess club" },
+            { "label": "C", "image": "2C.svg", "alt": "Science club" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 3,
+          "part": "part1",
+          "questionNumber": 3,
+          "type": "image-choice",
+          "questionText": "What kind of film was it?",
+          "options": [
+            { "label": "A", "image": "3A.svg", "alt": "Cinema" },
+            { "label": "B", "image": "3B.svg", "alt": "Cafe" },
+            { "label": "C", "image": "3C.svg", "alt": "Park" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 4,
+          "part": "part1",
+          "questionNumber": 4,
+          "type": "image-choice",
+          "questionText": "What kind of transportation is the man talking about?",
+          "options": [
+            { "label": "A", "image": "4A.svg", "alt": "Half past eight" },
+            { "label": "B", "image": "4B.svg", "alt": "Quarter past nine" },
+            { "label": "C", "image": "4C.svg", "alt": "Ten o'clock" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 5,
+          "part": "part1",
+          "questionNumber": 5,
+          "type": "image-choice",
+          "questionText": "Where are the boys' keys?",
+          "options": [
+            { "label": "A", "image": "5A.svg", "alt": "Headphones" },
+            { "label": "B", "image": "5B.svg", "alt": "Book" },
+            { "label": "C", "image": "5C.svg", "alt": "Plant" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 6,
+          "part": "part1",
+          "questionNumber": 6,
+          "type": "image-choice",
+          "questionText": "Which present is Mark going to buy?",
+          "options": [
+            { "label": "A", "image": "6A.svg", "alt": "Tennis" },
+            { "label": "B", "image": "6B.svg", "alt": "Swimming" },
+            { "label": "C", "image": "6C.svg", "alt": "Cycling" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 7,
+          "part": "part1",
+          "questionNumber": 7,
+          "type": "image-choice",
+          "questionText": "What will the weather be like tomorrow?",
+          "options": [
+            { "label": "A", "image": "7A.svg", "alt": "Kitchen" },
+            { "label": "B", "image": "7B.svg", "alt": "Bedroom" },
+            { "label": "C", "image": "7C.svg", "alt": "Living room" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 8,
+          "part": "part2",
+          "questionNumber": 8,
+          "type": "multiple-choice",
+          "questionText": "You hear two friends talking about a camping weekend. What is the girl's main worry?",
+          "options": [
+            { "label": "A", "text": "sleeping outside" },
+            { "label": "B", "text": "the weather" },
+            { "label": "C", "text": "washing facilities" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 9,
+          "part": "part2",
+          "questionNumber": 9,
+          "type": "multiple-choice",
+          "questionText": "You will hear two friends talking about a test. What's the girl's main problem with the test?",
+          "options": [
+            { "label": "A", "text": "her memory" },
+            { "label": "B", "text": "her brother" },
+            { "label": "C", "text": "a lack of time" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 10,
+          "part": "part2",
+          "questionNumber": 10,
+          "type": "multiple-choice",
+          "questionText": "You will hear a girl telling a friend about her windsurfing lesson. How did she feel about it?",
+          "options": [
+            { "label": "A", "text": "unhappy with the teaching" },
+            { "label": "B", "text": "embarrassed by her lack of ability" },
+            { "label": "C", "text": "fit enough to continue" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 11,
+          "part": "part2",
+          "questionNumber": 11,
+          "type": "multiple-choice",
+          "questionText": "You will hear two friends talking about a film they have seen. They agree that it has",
+          "options": [
+            { "label": "A", "text": "great characters." },
+            { "label": "B", "text": "a satisfactory ending." },
+            { "label": "C", "text": "a lot of excitement." }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 12,
+          "part": "part2",
+          "questionNumber": 12,
+          "type": "multiple-choice",
+          "questionText": "You hear two friends talking about a new cafe that has opened. They agree that the new coffee shop",
+          "options": [
+            { "label": "A", "text": "has great variety." },
+            { "label": "B", "text": "costs too much." },
+            { "label": "C", "text": "has poor service." }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 13,
+          "part": "part2",
+          "questionNumber": 13,
+          "type": "multiple-choice",
+          "questionText": "You hear two friends talking about their plans for the weekend. What will they do at the weekend?",
+          "options": [
+            { "label": "A", "text": "only go shopping" },
+            { "label": "B", "text": "watch TV at the girl's house" },
+            { "label": "C", "text": "shop and see a movie" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 14,
+          "part": "part3",
+          "questionNumber": 14,
+          "type": "gap-fill",
+          "questionText": "The house was built in the",
+          "answer": ""
+        },
+        {
+          "id": 15,
+          "part": "part3",
+          "questionNumber": 15,
+          "type": "gap-fill",
+          "questionText": "The Reynold family lived in the house until",
+          "answer": ""
+        },
+        {
+          "id": 16,
+          "part": "part3",
+          "questionNumber": 16,
+          "type": "gap-fill",
+          "questionText": "The servants had rooms in the",
+          "answer": ""
+        },
+        {
+          "id": 17,
+          "part": "part3",
+          "questionNumber": 17,
+          "type": "gap-fill",
+          "questionText": "The art collection is in the",
+          "answer": ""
+        },
+        {
+          "id": 18,
+          "part": "part3",
+          "questionNumber": 18,
+          "type": "gap-fill",
+          "questionText": "George Reynold was a",
+          "answer": ""
+        },
+        {
+          "id": 19,
+          "part": "part3",
+          "questionNumber": 19,
+          "type": "gap-fill",
+          "questionText": "George's brother died in a",
+          "answer": ""
+        },
+        {
+          "id": 20,
+          "part": "part4",
+          "questionNumber": 20,
+          "type": "multiple-choice",
+          "questionText": "You will hear a radio interview with an environmentalist called Jane. Jane thinks that people need to",
+          "options": [
+            { "label": "A", "text": "read more news reports." },
+            { "label": "B", "text": "be more positive." },
+            { "label": "C", "text": "accept that there is little they can do." }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 21,
+          "part": "part4",
+          "questionNumber": 21,
+          "type": "multiple-choice",
+          "questionText": "What can you do in four weeks, according to Jane?",
+          "options": [
+            { "label": "A", "text": "learn how to recycle" },
+            { "label": "B", "text": "start throwing away useful things" },
+            { "label": "C", "text": "have a new positive habit" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 22,
+          "part": "part4",
+          "questionNumber": 22,
+          "type": "multiple-choice",
+          "questionText": "Which of the following does Jane NOT mention?",
+          "options": [
+            { "label": "A", "text": "turning off the oven" },
+            { "label": "B", "text": "wasting water" },
+            { "label": "C", "text": "charging a phone" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 23,
+          "part": "part4",
+          "questionNumber": 23,
+          "type": "multiple-choice",
+          "questionText": "What does the interviewer suggest?",
+          "options": [
+            { "label": "A", "text": "People should arrange to have fewer bills." },
+            { "label": "B", "text": "People could save money if they were more careful." },
+            { "label": "C", "text": "People should spend more money on their house." }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 24,
+          "part": "part4",
+          "questionNumber": 24,
+          "type": "multiple-choice",
+          "questionText": "What does Jane say people should do?",
+          "options": [
+            { "label": "A", "text": "put one or two pounds in the bank every day" },
+            { "label": "B", "text": "go on less expensive holidays" },
+            { "label": "C", "text": "spend less money on energy" }
+          ],
+          "correctAnswer": ""
+        },
+        {
+          "id": 25,
+          "part": "part4",
+          "questionNumber": 25,
+          "type": "multiple-choice",
+          "questionText": "Jane believes that",
+          "options": [
+            { "label": "A", "text": "young people can make a difference to the planet." },
+            { "label": "B", "text": "ordinary people can do very little to save the environment." },
+            { "label": "C", "text": "governments are doing everything that they can." }
+          ],
+          "correctAnswer": ""
+        }
+      ]
+    },
+    {
       "testNumber": 101,
       "level": 1,
       "component": 1,
@@ -47,6 +657,26 @@
           "id": 2,
           "questionText": "Which word means the same as 'enormous'?",
           "options": ["A. Tiny", "B. Vast", "C. Quiet", "D. Happy"],
+          "correctAnswer": "B"
+        }
+      ]
+    },
+    {
+      "testNumber": 103,
+      "level": 1,
+      "component": 1,
+      "title": "Level 1 - Reading Comprehension Test B",
+      "questions": [
+        {
+          "id": 1,
+          "questionText": "What is the best title for this short text?",
+          "options": ["A. Daily routines", "B. Weather report", "C. Animal habitats", "D. Famous buildings"],
+          "correctAnswer": "A"
+        },
+        {
+          "id": 2,
+          "questionText": "Which sentence is correct?",
+          "options": ["A. He don't like tea.", "B. He doesn't like tea.", "C. He not likes tea.", "D. He no like tea."],
           "correctAnswer": "B"
         }
       ]

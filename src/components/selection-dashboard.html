@@ -15,11 +15,15 @@
         <option value="c2-proficiency">C2 Proficiency (CPE)</option>
       </select>
     </div>
-    <div class="form-group" id="testNumberGroup">
-      <!-- This will be populated dynamically based on the selected level -->
-    </div>
     <div class="form-group" id="componentGroup">
       <!-- This will also be populated dynamically -->
+    </div>
+    <div class="form-group" id="testNumberGroup">
+      <label for="testNumber">Test:</label>
+      <select id="testNumber" name="testNumber" disabled>
+        <option value="">-- Select level and component first --</option>
+      </select>
+      <p id="testEmptyState" class="selection-empty-state hidden"></p>
     </div>
     <button type="submit">Select and Edit Test</button>
   </form>

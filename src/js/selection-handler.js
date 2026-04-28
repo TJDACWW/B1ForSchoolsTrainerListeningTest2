@@ -4,21 +4,146 @@ const levelData = {
   movers: { name: 'Movers', tests: [1, 2, 3], components: ['Listening', 'Reading & Writing'] },
   flyers: { name: 'Flyers', tests: [1, 2, 3], components: ['Listening', 'Reading & Writing'] },
   'a2-key': { name: 'A2 Key (KET)', tests: [1, 2, 3], components: ['Listening', 'Reading & Writing'] },
-  'b1-preliminary': { name: 'B1 Preliminary (PET)', tests: [1, 2, 3], components: ['Reading', 'Writing'] },
+  'b1-preliminary': { name: 'B1 Preliminary (PET)', tests: [1, 2, 3], components: ['Listening', 'Reading', 'Writing'] },
   'b2-first': { name: 'B2 First (FCE)', tests: [1, 2, 3], components: ['Reading & Use of English', 'Writing'] },
   'c1-advanced': { name: 'C1 Advanced (CAE)', tests: [1, 2, 3], components: ['Reading & Use of English', 'Writing'] },
   'c2-proficiency': { name: 'C2 Proficiency (CPE)', tests: [1, 2, 3], components: ['Reading & Use of English', 'Writing'] }
 };
 
-function populateTestNumbers(level) {
+const levelKeys = Object.keys(levelData);
+let testCatalog = [];
+
+function getLevelOrdinal(levelKey) {
+  return levelKeys.indexOf(levelKey) + 1;
+}
+
+function getComponentOrdinal(levelKey, componentName) {
+  const level = levelData[levelKey];
+  if (!level || !Array.isArray(level.components)) return null;
+  const index = level.components.indexOf(componentName);
+  return index === -1 ? null : index + 1;
+}
+
+function normalizeComparable(value) {
+  return String(value == null ? '' : value).trim().toLowerCase();
+}
+
+function slugify(value) {
+  return String(value == null ? '' : value)
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function flattenCandidateValues(value) {
+  if (Array.isArray(value)) {
+    return value.flatMap(item => flattenCandidateValues(item));
+  }
+  if (value && typeof value === 'object') {
+    return Object.values(value).flatMap(item => flattenCandidateValues(item));
+  }
+  return value == null || value === '' ? [] : [value];
+}
+
+function valuesMatch(sourceValue, candidateValues) {
+  const sources = flattenCandidateValues(sourceValue).map(normalizeComparable).filter(Boolean);
+  const candidates = flattenCandidateValues(candidateValues).map(normalizeComparable).filter(Boolean);
+  if (!sources.length || !candidates.length) return false;
+  return sources.some(source => candidates.some(candidate => source === candidate));
+}
+
+function hasExplicitMetadata(test, keys) {
+  return keys.some(key => test[key] != null && test[key] !== '' && !(Array.isArray(test[key]) && !test[key].length));
+}
+
+function testMatchesSelection(test, selectedLevelKey, selectedComponent) {
+  const levelName = levelData[selectedLevelKey] ? levelData[selectedLevelKey].name : selectedLevelKey;
+  const levelOrdinal = getLevelOrdinal(selectedLevelKey);
+  const componentOrdinal = getComponentOrdinal(selectedLevelKey, selectedComponent);
+  const levelCandidates = [selectedLevelKey, levelName, levelOrdinal, String(levelOrdinal)];
+  const componentCandidates = [selectedComponent, componentOrdinal, String(componentOrdinal)];
+
+  const levelFields = ['levelKey', 'level', 'levelId', 'levelName', 'levels', 'levelNames'];
+  const componentFields = ['componentKey', 'component', 'componentId', 'componentName', 'components', 'componentNames'];
+
+  const levelMatch = !hasExplicitMetadata(test, levelFields) || levelFields.some(field => valuesMatch(test[field], levelCandidates));
+  const componentMatch = !hasExplicitMetadata(test, componentFields) || componentFields.some(field => valuesMatch(test[field], componentCandidates));
+
+  return levelMatch && componentMatch;
+}
+
+function testIdentityFor(test, index) {
+  const pieces = [
+    test.testId,
+    test.id,
+    test.testNumber,
+    test.title,
+    index + 1
+  ].filter(value => value != null && value !== '');
+
+  return pieces
+    .map(piece => slugify(piece))
+    .filter(Boolean)
+    .join('-') || `test-${index + 1}`;
+}
+
+function testDisplayLabel(test) {
+  const parts = [];
+  if (test.testNumber != null && test.testNumber !== '') {
+    parts.push(`Test ${test.testNumber}`);
+  }
+  if (test.title) {
+    parts.push(test.title);
+  }
+  if (!parts.length && test.id != null) {
+    parts.push(`Test ${test.id}`);
+  }
+  return parts.join(' - ') || 'Untitled test';
+}
+
+function populateTestNumbers(levelKey) {
   const testNumberGroup = document.getElementById('testNumberGroup');
-  testNumberGroup.innerHTML = `
-    <label for="testNumber">Test Number:</label>
-    <select id="testNumber" name="testNumber">
-      <option value="">-- Select Test --</option>
-      ${levelData[level].tests.map(test => `<option value="${test}">${test}</option>`).join('')}
-    </select>
+  const testPicker = document.getElementById('testNumber');
+  const testEmptyState = document.getElementById('testEmptyState');
+  const componentSelect = document.getElementById('component');
+  const selectedComponent = componentSelect ? componentSelect.value : '';
+
+  if (!testNumberGroup || !testPicker || !testEmptyState) return;
+
+  if (!levelKey || !selectedComponent) {
+    testPicker.innerHTML = '<option value="">-- Select level and component first --</option>';
+    testPicker.disabled = true;
+    testEmptyState.textContent = 'Pick a level and component to see matching tests.';
+    testEmptyState.classList.remove('hidden');
+    return;
+  }
+
+  const matches = testCatalog.filter(test => testMatchesSelection(test, levelKey, selectedComponent));
+  const previousValue = testPicker.value;
+
+  if (!matches.length) {
+    testPicker.innerHTML = '<option value="">-- No tests available --</option>';
+    testPicker.disabled = true;
+    testEmptyState.textContent = 'No tests are available for this level and component.';
+    testEmptyState.classList.remove('hidden');
+    return;
+  }
+
+  testPicker.disabled = false;
+  testPicker.innerHTML = `
+    <option value="">-- Select Test --</option>
+    ${matches.map((test, index) => {
+      const identity = testIdentityFor(test, index);
+      return `<option value="${identity}">${escapeHtml(testDisplayLabel(test))}</option>`;
+    }).join('')}
   `;
+  testEmptyState.classList.add('hidden');
+
+  const nextValue = matches.some((test, index) => testIdentityFor(test, index) === previousValue)
+    ? previousValue
+    : '';
+  testPicker.value = nextValue;
 }
 
 function populateComponents(level) {
@@ -40,6 +165,23 @@ async function loadHTML(path) {
   } catch (e) {
     console.warn('Failed to load', path, e);
     return '';
+  }
+}
+
+async function loadTestCatalog() {
+  try {
+    const resp = await fetch('data/test-data.json');
+    if (!resp.ok) return [];
+    const data = await resp.json();
+    if (!data || !Array.isArray(data.tests)) return [];
+    return data.tests.map((test, index) => ({
+      ...test,
+      __catalogIndex: index,
+      __pickerId: testIdentityFor(test, index)
+    }));
+  } catch (e) {
+    console.warn('Could not load test-data.json', e);
+    return [];
   }
 }
 
@@ -140,22 +282,66 @@ document.addEventListener('DOMContentLoaded', async () => {
   selectionContainer.innerHTML = selectionHtml;
 
   const editorTemplate = await loadHTML('components/test-editor.html');
+  testCatalog = await loadTestCatalog();
 
   const levelSelect = document.getElementById('level');
   const form = document.getElementById('testSelector');
   const submitBtn = form.querySelector('button[type="submit"]');
+  const componentGroup = document.getElementById('componentGroup');
+  const testNumberGroup = document.getElementById('testNumberGroup');
+  const testEmptyState = document.getElementById('testEmptyState');
   submitBtn.disabled = true;
+
+  function updateSubmitState() {
+    const componentSelect = document.getElementById('component');
+    const testSelect = document.getElementById('testNumber');
+    const hasLevel = Boolean(levelSelect && levelSelect.value);
+    const hasComponent = Boolean(componentSelect && componentSelect.value);
+    const hasTest = Boolean(testSelect && !testSelect.disabled && testSelect.value);
+    submitBtn.disabled = !(hasLevel && hasComponent && hasTest);
+  }
+
+  function refreshComponentPicker() {
+    const selectedLevel = levelSelect.value;
+    if (!selectedLevel) {
+      componentGroup.innerHTML = '';
+      return;
+    }
+    populateComponents(selectedLevel);
+  }
+
+  function refreshTestPicker() {
+    populateTestNumbers(levelSelect.value);
+    updateSubmitState();
+  }
 
   levelSelect.addEventListener('change', function() {
     const selectedLevel = this.value;
     if (selectedLevel) {
-      populateTestNumbers(selectedLevel);
-      populateComponents(selectedLevel);
-      submitBtn.disabled = false;
+      refreshComponentPicker();
+      refreshTestPicker();
     } else {
-      document.getElementById('testNumberGroup').innerHTML = '';
-      document.getElementById('componentGroup').innerHTML = '';
+      componentGroup.innerHTML = '';
+      testNumberGroup.innerHTML = `
+        <label for="testNumber">Test:</label>
+        <select id="testNumber" name="testNumber" disabled>
+          <option value="">-- Select level and component first --</option>
+        </select>
+        <p id="testEmptyState" class="selection-empty-state hidden"></p>
+      `;
       submitBtn.disabled = true;
+    }
+    updateSubmitState();
+  });
+
+  form.addEventListener('change', (event) => {
+    if (!(event.target instanceof HTMLSelectElement)) return;
+    if (event.target.id === 'component') {
+      refreshTestPicker();
+      return;
+    }
+    if (event.target.id === 'testNumber') {
+      updateSubmitState();
     }
   });
 
@@ -166,28 +352,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     const selectedLevelName = levelData[selectedLevelKey] ? levelData[selectedLevelKey].name : selectedLevelKey;
     const testNumberEl = document.getElementById('testNumber');
     const componentEl = document.getElementById('component');
-    const selectedTestNumber = testNumberEl ? testNumberEl.value : '';
+    const selectedTestId = testNumberEl ? testNumberEl.value : '';
     const selectedComponent = componentEl ? componentEl.value : '';
+    const matchedTest = testCatalog.find(test => test.__pickerId === selectedTestId);
+
+    if (!matchedTest) {
+      updateSubmitState();
+      return;
+    }
 
     editorContainer.innerHTML = editorTemplate;
     editorContainer.classList.remove('hidden');
     selectionContainer.classList.add('hidden');
 
     const header = editorContainer.querySelector('h1');
-    if (header) header.textContent = `Editing: ${selectedLevelName} - Test ${selectedTestNumber}, ${selectedComponent}`;
-
-    let testDataJson = null;
-    try {
-      const resp = await fetch('data/test-data.json');
-      if (resp.ok) testDataJson = await resp.json();
-    } catch (err) {
-      console.warn('Could not load test-data.json', err);
-    }
-
-    let matchedTest = null;
-    if (testDataJson && Array.isArray(testDataJson.tests)) {
-      matchedTest = testDataJson.tests.find(t => String(t.testNumber) === String(selectedTestNumber));
-    }
+    const selectedTestLabel = testDisplayLabel(matchedTest);
+    if (header) header.textContent = `Editing: ${selectedLevelName} - ${selectedTestLabel}, ${selectedComponent}`;
 
     const questionsTbody = editorContainer.querySelector('#questionsTable tbody');
     const modal = editorContainer.querySelector('#questionModal');
@@ -211,6 +391,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     let currentQuestions = matchedTest && Array.isArray(matchedTest.questions)
       ? matchedTest.questions.map(cloneQuestion)
       : [];
+    const selectedTestKey = matchedTest.testId || matchedTest.__pickerId || selectedTestId || `test-${matchedTest.testNumber || '0'}`;
+    const selectedTestNumber = matchedTest.testNumber != null ? matchedTest.testNumber : selectedTestKey;
+    const selectedAssetSlug = matchedTest.assetSlug || matchedTest.testSlug || matchedTest.slug || matchedTest.testId || selectedTestKey;
 
     function questionTypeLabel(type) {
       switch (String(type || '')) {
@@ -376,7 +559,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
 
-    const modalDraftKey = () => `modalDraft:${selectedLevelKey || 'lvl'}:${selectedTestNumber || '0'}:${selectedComponent || 'comp'}`;
+    const modalDraftKey = () => `modalDraft:${selectedLevelKey || 'lvl'}:${selectedTestKey || '0'}:${selectedComponent || 'comp'}`;
 
     function saveDraft() {
       if (!modal) return;
@@ -454,7 +637,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (!window.previewHandler) return;
       window.previewHandler.setTestData({
         level: selectedLevelName,
+        testId: selectedTestKey,
+        assetSlug: selectedAssetSlug,
         testNumber: selectedTestNumber,
+        testTitle: matchedTest.title || '',
         component: selectedComponent,
         questions: currentQuestions.map(cloneQuestion)
       });
@@ -646,7 +832,10 @@ document.addEventListener('DOMContentLoaded', async () => {
           metadata: {
             level: selectedLevelName,
             levelKey: selectedLevelKey,
+            testId: selectedTestKey,
+            assetSlug: selectedAssetSlug,
             testNumber: selectedTestNumber,
+            testTitle: matchedTest.title || '',
             component: selectedComponent,
             versionNote: versionInput ? versionInput.value : '',
             updatedAt: new Date().toISOString()
@@ -655,6 +844,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
 
         try {
+          localStorage.setItem(`runTestDraft:${selectedLevelKey || 'lvl'}:${selectedTestKey || 'test'}:${selectedComponent || 'comp'}`, JSON.stringify(payload));
           localStorage.setItem('runTestDraft', JSON.stringify(payload));
         } catch (e) {
           console.warn('Could not save runTestDraft to localStorage', e);
@@ -663,7 +853,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        const namePart = `${selectedLevelKey || 'level'}-test${selectedTestNumber || '0'}-${selectedComponent ? selectedComponent.replace(/\s+/g, '-') : 'component'}`;
+        const namePart = `${selectedLevelKey || 'level'}-${selectedTestKey || 'test'}-${selectedComponent ? slugify(selectedComponent) : 'component'}`;
         a.download = `${namePart}.json`;
         a.href = url;
         document.body.appendChild(a);
@@ -672,7 +862,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         URL.revokeObjectURL(url);
 
         try {
-          window.open('../exercise1.html', '_blank');
+          window.open('../index.html', '_blank');
         } catch (e) {
           console.warn('Could not open runner window', e);
         }

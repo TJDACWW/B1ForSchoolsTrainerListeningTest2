@@ -504,6 +504,117 @@ body {
   cursor: not-allowed;
 }
 
+.test-chooser-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-24);
+  background:
+    radial-gradient(circle at top left, rgba(33, 128, 141, 0.18), transparent 34%),
+    linear-gradient(180deg, rgba(252, 252, 249, 0.96), rgba(255, 255, 253, 0.98));
+}
+
+.test-chooser-overlay.hidden {
+  display: none;
+}
+
+.test-chooser-card {
+  width: min(720px, 100%);
+  background: var(--color-surface);
+  border: 1px solid var(--color-card-border);
+  border-radius: 24px;
+  box-shadow: var(--shadow-md);
+  padding: clamp(24px, 4vw, 36px);
+}
+
+.test-chooser-header {
+  display: grid;
+  gap: var(--space-12);
+  margin-bottom: var(--space-24);
+}
+
+.test-chooser-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(var(--color-teal-500-rgb), 0.12);
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.02em;
+}
+
+.test-chooser-title {
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.test-chooser-copy {
+  max-width: 56ch;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
+}
+
+.test-chooser-fields {
+  display: grid;
+  gap: var(--space-16);
+}
+
+.test-chooser-label {
+  display: grid;
+  gap: var(--space-8);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.test-chooser-select {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--color-border);
+  background: var(--color-background);
+  color: var(--color-text);
+  font-size: var(--font-size-base);
+}
+
+.test-chooser-meta {
+  min-height: 60px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(var(--color-slate-500-rgb), 0.08);
+  color: var(--color-text-secondary);
+}
+
+.test-chooser-actions {
+  display: flex;
+  gap: var(--space-12);
+  margin-top: var(--space-24);
+  flex-wrap: wrap;
+}
+
+.test-chooser-secondary {
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.test-chooser-secondary:hover {
+  background: var(--color-secondary);
+}
+
+.test-chooser-status {
+  margin-top: var(--space-16);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
 /* Part Content */
 .part-content {
   max-width: 1200px;
@@ -1085,6 +1196,14 @@ body.warm-mode {
     min-width: 64px;
   }
 
+  .test-chooser-actions {
+    flex-direction: column;
+  }
+
+  .test-chooser-actions .submit-btn {
+    width: 100%;
+  }
+
   .timer-display {
     padding: 4px 8px;
     font-size: 14px;
@@ -1124,6 +1243,7 @@ body.warm-mode {
     <div class="settings-panel" id="settingsPanel" style="display: block;">
       <div class="settings-bar" id="settingsBar">
         <button id="settingsToggleBtn" class="toggle-btn" onclick="toggleSettingsPanel()">☰</button>
+        <button class="submit-btn test-chooser-secondary" id="chooseTestBtn" onclick="openTestChooser()">CHOOSE TEST</button>
         <button class="submit-btn" id="submitBtn" onclick="submitTest()">SUBMIT TEST</button>
         <div id="autosaveStatus" style="margin-left:8px; display:inline-block;"></div>
       </div>
@@ -1144,6 +1264,30 @@ body.warm-mode {
             <button type="button" class="font-step-btn" id="fontIncreaseBtn" onclick="increaseFontSize()" aria-label="Increase text size">+</button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="test-chooser-overlay" id="testChooserOverlay" aria-hidden="true">
+      <div class="test-chooser-card">
+        <div class="test-chooser-header">
+          <span class="test-chooser-eyebrow">B1 Listening</span>
+          <h1 class="test-chooser-title">Choose A Test</h1>
+          <p class="test-chooser-copy">Select the listening test the candidate should take. The runner will open it directly, with no editor and no download step.</p>
+        </div>
+        <div class="test-chooser-fields">
+          <label class="test-chooser-label" for="testChooserSelect">
+            Test
+            <select id="testChooserSelect" class="test-chooser-select">
+              <option value="">Loading tests...</option>
+            </select>
+          </label>
+          <div class="test-chooser-meta" id="testChooserMeta">Loading available tests...</div>
+        </div>
+        <div class="test-chooser-actions">
+          <button class="submit-btn" id="startSelectedTestBtn" onclick="startSelectedTest()" disabled>Start Test</button>
+          <button class="submit-btn test-chooser-secondary" id="closeTestChooserBtn" onclick="closeTestChooser()">Cancel</button>
+        </div>
+        <div class="test-chooser-status" id="testChooserStatus"></div>
       </div>
     </div>
 
@@ -1200,6 +1344,8 @@ body.warm-mode {
 
     // Persistence helpers (save minimal state to localStorage)
     const STORAGE_KEY = 'ket_mock_test_v1';
+    let listeningTestCatalog = [];
+    let chooserInitialized = false;
 
     function saveState() {
       try {
@@ -1271,7 +1417,38 @@ body.warm-mode {
       }
     }
 
-    function normalizeListeningOption(option, index) {
+    function createListeningTestMeta(meta = {}) {
+      const testId = String(meta.testId || meta.id || meta.slug || meta.assetSlug || 'legacy').trim() || 'legacy';
+      const assetSlug = String(meta.assetSlug || meta.testSlug || meta.slug || meta.testId || '').trim();
+      const part1AssetBase = String(meta.part1AssetBase || '').trim();
+      return {
+        testId,
+        assetSlug,
+        part1AssetBase
+      };
+    }
+
+    let activeListeningTestMeta = createListeningTestMeta({ testId: 'legacy', assetSlug: 'legacy' });
+
+    function getPart1AssetBase(meta = activeListeningTestMeta) {
+      const explicitBase = String(meta && meta.part1AssetBase ? meta.part1AssetBase : '').trim().replace(/\/+$/, '');
+      if (explicitBase) return explicitBase;
+      const slug = String(meta && meta.assetSlug ? meta.assetSlug : '').trim();
+      if (slug && slug !== 'legacy') return `src/assets/listening/${slug}/part1`;
+      return 'src/assets/listening/part1';
+    }
+
+    function resolveListeningImagePath(imagePath, partKey = 'part1', meta = activeListeningTestMeta) {
+      const raw = String(imagePath == null ? '' : imagePath).trim();
+      if (!raw) return '';
+      if (partKey !== 'part1') return raw;
+      if (/^(?:data:|blob:|https?:|file:)/i.test(raw)) return raw;
+      if (/^(?:\/|\.\/|\.\.\/|src\/)/.test(raw)) return raw;
+      return `${getPart1AssetBase(meta)}/${raw.replace(/^\/+/, '')}`;
+    }
+
+    function normalizeListeningOption(option, index, context = {}) {
+      const partKey = context.partKey || 'part1';
       const label = String.fromCharCode(65 + index);
       if (option == null) {
         return { label, text: '', image: '', alt: '' };
@@ -1280,22 +1457,23 @@ body.warm-mode {
         return { label, text: option, image: '', alt: '' };
       }
       if (typeof option === 'object') {
+        const rawImage = option.image ?? option.src ?? option.url ?? '';
         return {
           label: option.label || label,
           text: option.text ?? option.value ?? option.caption ?? '',
-          image: option.image ?? option.src ?? option.url ?? '',
+          image: partKey === 'part1' ? resolveListeningImagePath(rawImage, partKey, context.meta) : '',
           alt: option.alt ?? option.imageAlt ?? option.label ?? ''
         };
       }
       return { label, text: String(option), image: '', alt: '' };
     }
 
-    function normalizeListeningOptions(options) {
+    function normalizeListeningOptions(options, context = {}) {
       if (!options) return [];
-      if (Array.isArray(options)) return options.map((opt, index) => normalizeListeningOption(opt, index));
+      if (Array.isArray(options)) return options.map((opt, index) => normalizeListeningOption(opt, index, context));
       if (typeof options === 'object') {
         return Object.keys(options).sort().map((key, index) => {
-          const normalized = normalizeListeningOption(options[key], index);
+          const normalized = normalizeListeningOption(options[key], index, context);
           normalized.label = key;
           return normalized;
         });
@@ -1324,13 +1502,14 @@ body.warm-mode {
       };
       const files = fileMap[qNum] || fileMap[1];
       return {
-        A: { label: 'A', text: '', image: `src/assets/listening/part1/${files.A}`, alt: 'Choice A' },
-        B: { label: 'B', text: '', image: `src/assets/listening/part1/${files.B}`, alt: 'Choice B' },
-        C: { label: 'C', text: '', image: `src/assets/listening/part1/${files.C}`, alt: 'Choice C' }
+        A: { label: 'A', text: '', image: files.A, alt: 'Choice A' },
+        B: { label: 'B', text: '', image: files.B, alt: 'Choice B' },
+        C: { label: 'C', text: '', image: files.C, alt: 'Choice C' }
       };
     }
 
     function createDefaultListeningTestData() {
+      activeListeningTestMeta = createListeningTestMeta({ testId: 'legacy', assetSlug: 'legacy' });
       const shell = createListeningShell();
       const part1Questions = {
         1: {
@@ -1563,16 +1742,18 @@ body.warm-mode {
     function applyEditorDraftToTestData(draft) {
       if (!draft || !Array.isArray(draft.questions)) return false;
 
+      activeListeningTestMeta = createListeningTestMeta(draft.metadata || {});
       const next = createListeningShell();
       const explicit = [];
 
       draft.questions.forEach((q, idx) => {
-        const normalizedDraftOptions = normalizeListeningOptions(q.options);
+        const partKey = String(q.part || 'part1');
+        const normalizedDraftOptions = normalizeListeningOptions(q.options, { partKey, meta: activeListeningTestMeta });
         const entry = {
           question: q.questionText || q.text || q.question || `Question ${idx + 1}`,
-          type: q.type || (q.part === 'part1'
+          type: q.type || (partKey === 'part1'
             ? 'image-choice'
-            : q.part === 'part3'
+            : partKey === 'part3'
               ? 'gap-fill'
               : normalizedDraftOptions.length
                 ? 'multiple-choice'
@@ -1581,7 +1762,14 @@ body.warm-mode {
 
         if (normalizedDraftOptions.length) {
           entry.options = normalizedDraftOptions.reduce((acc, option) => {
-            acc[option.label || String.fromCharCode(65 + Object.keys(acc).length)] = option;
+            const key = option.label || String.fromCharCode(65 + Object.keys(acc).length);
+            acc[key] = partKey === 'part1'
+              ? option
+              : {
+                  label: key,
+                  text: option.text,
+                  alt: option.alt
+                };
             return acc;
           }, {});
         }
@@ -1590,7 +1778,6 @@ body.warm-mode {
         if (q.answer != null) entry.answer = q.answer;
 
         if (q.part && q.questionNumber != null) {
-          const partKey = String(q.part);
           const qnum = Number(q.questionNumber);
           if (!next[partKey]) {
             next[partKey] = { title: partKey, questions: {} };
@@ -1603,7 +1790,7 @@ body.warm-mode {
       if (!explicit.length) {
         const qobj = {};
         draft.questions.forEach((q, idx) => {
-          const normalizedDraftOptions = normalizeListeningOptions(q.options);
+          const normalizedDraftOptions = normalizeListeningOptions(q.options, { partKey: 'part1', meta: activeListeningTestMeta });
           const entry = {
             question: q.questionText || q.text || q.question || `Question ${idx + 1}`,
             type: q.type || (normalizedDraftOptions.length ? 'multiple-choice' : 'short-answer')
@@ -1630,7 +1817,213 @@ body.warm-mode {
       return true;
     }
 
+    const DEFAULT_LISTENING_TEST_ID = 'b1-listening-test-2';
     const testData = createDefaultListeningTestData();
+
+    function loadSelectedListeningDraft() {
+      try {
+        const raw = localStorage.getItem('runTestDraft');
+        if (!raw) return false;
+        const draft = JSON.parse(raw);
+        return applyEditorDraftToTestData(draft);
+      } catch (e) {
+        console.warn('Could not load selected listening draft', e);
+        return false;
+      }
+    }
+
+    async function loadDefaultListeningTest() {
+      const catalog = listeningTestCatalog.length ? listeningTestCatalog : await loadListeningTestCatalog();
+      listeningTestCatalog = catalog;
+
+      const preferredTest = catalog.find(test => String(test.testId || test.assetSlug || test.testNumber) === DEFAULT_LISTENING_TEST_ID);
+      const fallbackTest = preferredTest || catalog[0];
+      if (!fallbackTest) return false;
+
+      const draft = buildListeningDraftFromCatalogTest(fallbackTest);
+      const applied = applyEditorDraftToTestData(draft);
+      if (!applied) return false;
+
+      try {
+        localStorage.setItem('runTestDraft', JSON.stringify(draft));
+      } catch (e) {
+        console.warn('Could not persist default listening test', e);
+      }
+
+      return true;
+    }
+
+    function createEmptyAnswerState() {
+      return {
+        part1: {},
+        part2: {},
+        part3: {},
+        part4: {},
+        part5: {}
+      };
+    }
+
+    function cloneTestQuestions(questions) {
+      return JSON.parse(JSON.stringify(Array.isArray(questions) ? questions : []));
+    }
+
+    function buildListeningDraftFromCatalogTest(test) {
+      return {
+        metadata: {
+          level: 'B1 Preliminary (PET)',
+          levelKey: 'b1-preliminary',
+          testId: test.testId || test.assetSlug || String(test.testNumber || ''),
+          assetSlug: test.assetSlug || '',
+          testNumber: test.testNumber != null ? test.testNumber : '',
+          testTitle: test.title || '',
+          component: 'Listening',
+          updatedAt: new Date().toISOString()
+        },
+        questions: cloneTestQuestions(test.questions)
+      };
+    }
+
+    async function loadListeningTestCatalog() {
+      const response = await fetch('src/data/test-data.json');
+      if (!response.ok) {
+        throw new Error(`Failed to load test catalog (${response.status})`);
+      }
+      const data = await response.json();
+      const tests = Array.isArray(data && data.tests) ? data.tests : [];
+      return tests.filter(test => test.levelKey === 'b1-preliminary' && test.component === 'Listening');
+    }
+
+    function getCurrentListeningTestId() {
+      return activeListeningTestMeta && activeListeningTestMeta.testId
+        ? String(activeListeningTestMeta.testId)
+        : '';
+    }
+
+    function updateTestChooserDetails() {
+      const select = document.getElementById('testChooserSelect');
+      const meta = document.getElementById('testChooserMeta');
+      const startBtn = document.getElementById('startSelectedTestBtn');
+      if (!select || !meta || !startBtn) return;
+
+      const selectedId = select.value;
+      const selectedTest = listeningTestCatalog.find(test => String(test.testId || test.assetSlug || test.testNumber) === selectedId);
+      startBtn.disabled = !selectedTest;
+
+      if (!selectedTest) {
+        meta.textContent = 'Select a test to see its details.';
+        return;
+      }
+
+      const part1Count = Array.isArray(selectedTest.questions)
+        ? selectedTest.questions.filter(question => question.part === 'part1').length
+        : 0;
+      const label = selectedTest.testNumber != null ? `Test ${selectedTest.testNumber}` : 'Listening test';
+      meta.textContent = `${label}: ${selectedTest.title || 'Untitled'} • ${part1Count} Part 1 questions • Assets: ${selectedTest.assetSlug || 'legacy'}`;
+    }
+
+    async function setupTestChooser() {
+      const select = document.getElementById('testChooserSelect');
+      const status = document.getElementById('testChooserStatus');
+      const closeBtn = document.getElementById('closeTestChooserBtn');
+      if (!select || !status || chooserInitialized) return;
+
+      chooserInitialized = true;
+      status.textContent = 'Loading tests...';
+
+      try {
+        listeningTestCatalog = await loadListeningTestCatalog();
+        if (!listeningTestCatalog.length) {
+          select.innerHTML = '<option value="">No listening tests available</option>';
+          select.disabled = true;
+          status.textContent = 'No B1 listening tests were found.';
+          updateTestChooserDetails();
+          return;
+        }
+
+        select.disabled = false;
+        select.innerHTML = `
+          <option value="">-- Select Test --</option>
+          ${listeningTestCatalog.map(test => {
+            const id = String(test.testId || test.assetSlug || test.testNumber);
+            const label = test.testNumber != null ? `Test ${test.testNumber}` : 'Test';
+            const title = test.title ? ` - ${test.title}` : '';
+            return `<option value="${escapeHtml(id)}">${escapeHtml(label + title)}</option>`;
+          }).join('')}
+        `;
+
+        const currentId = getCurrentListeningTestId();
+        if (currentId && listeningTestCatalog.some(test => String(test.testId || test.assetSlug || test.testNumber) === currentId)) {
+          select.value = currentId;
+        } else if (listeningTestCatalog.length === 1) {
+          select.value = String(listeningTestCatalog[0].testId || listeningTestCatalog[0].assetSlug || listeningTestCatalog[0].testNumber);
+        }
+
+        status.textContent = '';
+        updateTestChooserDetails();
+        select.addEventListener('change', updateTestChooserDetails);
+      } catch (error) {
+        console.warn('Could not load listening tests', error);
+        select.innerHTML = '<option value="">Unable to load tests</option>';
+        select.disabled = true;
+        status.textContent = 'The test list could not be loaded.';
+      }
+
+      if (closeBtn) {
+        closeBtn.style.display = getCurrentListeningTestId() ? '' : 'none';
+      }
+    }
+
+    function resetStateForNewTest() {
+      state.currentPart = 1;
+      state.answers = createEmptyAnswerState();
+      delete state.part2ActiveTab;
+    }
+
+    function openTestChooser() {
+      const overlay = document.getElementById('testChooserOverlay');
+      const closeBtn = document.getElementById('closeTestChooserBtn');
+      if (!overlay) return;
+      if (closeBtn) closeBtn.style.display = getCurrentListeningTestId() ? '' : 'none';
+      overlay.classList.remove('hidden');
+      overlay.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeTestChooser() {
+      const overlay = document.getElementById('testChooserOverlay');
+      if (!overlay || !getCurrentListeningTestId()) return;
+      overlay.classList.add('hidden');
+      overlay.setAttribute('aria-hidden', 'true');
+    }
+
+    function startSelectedTest() {
+      const select = document.getElementById('testChooserSelect');
+      const status = document.getElementById('testChooserStatus');
+      if (!select || !status) return;
+
+      const selectedTest = listeningTestCatalog.find(test => String(test.testId || test.assetSlug || test.testNumber) === select.value);
+      if (!selectedTest) {
+        status.textContent = 'Choose a test before continuing.';
+        return;
+      }
+
+      const draft = buildListeningDraftFromCatalogTest(selectedTest);
+      const applied = applyEditorDraftToTestData(draft);
+      if (!applied) {
+        status.textContent = 'That test could not be loaded.';
+        return;
+      }
+
+      try {
+        localStorage.setItem('runTestDraft', JSON.stringify(draft));
+      } catch (e) {
+        console.warn('Could not persist selected listening test', e);
+      }
+
+      resetStateForNewTest();
+      saveState();
+      closeTestChooser();
+      showPart(1);
+    }
 
     // Image Upload Handler 
     function handleImageUpload(event) {
@@ -1832,7 +2225,7 @@ body.warm-mode {
       updatePart4Sticky();
     }
 
-    function normalizeQuestionForRender(question) {
+    function normalizeQuestionForRender(question, partKey) {
       return {
         question: question.question || question.questionText || question.text || '',
         type: question.type || 'multiple-choice',
@@ -1852,7 +2245,7 @@ body.warm-mode {
     }
 
     function renderOptionMarkup(partNumber, qNum, key, option, saved, mode) {
-      const normalized = normalizeListeningOption(option, key.charCodeAt(0) - 65);
+      const normalized = normalizeListeningOption(option, key.charCodeAt(0) - 65, { partKey: `part${partNumber}`, meta: activeListeningTestMeta });
       const selected = saved === key ? 'selected' : '';
       const hasImage = Boolean(normalized.image);
       const imageMarkup = hasImage ? `
@@ -1878,9 +2271,9 @@ body.warm-mode {
     function renderMultipleChoicePart(partNumber, title, questions, savedAnswers, mode) {
       let html = `<div class="part-content"><h2 class="part-title">${escapeHtml(title)}</h2>`;
       Object.keys(questions).sort((a, b) => Number(a) - Number(b)).forEach(qNum => {
-        const q = normalizeQuestionForRender(questions[qNum]);
+        const q = normalizeQuestionForRender(questions[qNum], `part${partNumber}`);
         const saved = (savedAnswers && savedAnswers[qNum]) || '';
-        const options = normalizeListeningOptions(q.options);
+        const options = normalizeListeningOptions(q.options, { partKey: `part${partNumber}`, meta: activeListeningTestMeta });
         const useCards = mode === 'card' || options.some(option => option.image);
         const badge = (partNumber === 1 || partNumber === 2 || partNumber === 4)
           ? `<div class="question-badge">Question ${escapeHtml(qNum)}</div>`
@@ -2303,9 +2696,17 @@ body.warm-mode {
     }
 
     // Initialize
-    window.addEventListener('load', function() {
+    window.addEventListener('load', async function() {
       // Try to restore saved state from localStorage
       const restored = loadState();
+      const hasSelectedDraft = loadSelectedListeningDraft();
+      if (!hasSelectedDraft) {
+        try {
+          await loadDefaultListeningTest();
+        } catch (error) {
+          console.warn('Could not load default listening test', error);
+        }
+      }
       if (restored) {
         showAutosaveStatus('Restored previous answers', 'ok');
       }
@@ -2352,8 +2753,10 @@ body.warm-mode {
       // Show test content and render the current part
       const testContent = document.getElementById('testContent');
       if (testContent) testContent.style.display = 'block';
-      if (settingsPanel) settingsPanel.style.display = 'block';
+      const settingsPanelEl = document.getElementById('settingsPanel');
+      if (settingsPanelEl) settingsPanelEl.style.display = 'block';
       showPart(Math.min(4, Math.max(1, Number(state.currentPart) || 1)));
+      setupTestChooser();
 
       // Recompute sticky offsets when orientation changes
       window.addEventListener('orientationchange', updatePart4Sticky);
