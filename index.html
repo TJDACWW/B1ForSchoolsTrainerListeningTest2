@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cambridge English A2 KET Mock Test 1</title>
+  <title>Cambridge English B1 Listening Test</title>
   <style>
     :root {
   /* Primitive Color Tokens */
@@ -1359,6 +1359,15 @@ body.warm-mode {
       return [];
     }
 
+    function escapeHtml(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     function makeChoiceOptions(qNum) {
       const fileMap = {
         1: { A: '1A.jpg', B: '1B.jpeg', C: '1C.jpg' },
@@ -2219,7 +2228,7 @@ body.warm-mode {
       // Format answers and include candidate name at the top
       const timestamp = new Date().toLocaleString();
       let emailBody = `Candidate Name: ${encodeURIComponent(fullName)}%0D%0A`;
-      emailBody += `CAMBRIDGE ENGLISH A2 KET - MOCK TEST 1%0D%0ASubmission Time: ${encodeURIComponent(timestamp)}%0D%0A%0D%0A`;
+      emailBody += `B1 LISTENING TEST%0D%0ASubmission Time: ${encodeURIComponent(timestamp)}%0D%0A%0D%0A`;
 
       // Parts 1-4
       emailBody += `PART 1-4 (Multiple Choice):%0D%0A`;
@@ -2242,7 +2251,7 @@ body.warm-mode {
 
       // Create mailto link with recipient set to timothy@english-world.it
       const recipient = 'timothy@english-world.it';
-      const mailtoLink = `mailto:${recipient}?subject=Cambridge%20A2%20KET%20Mock%20Test%201%20-%20Submission%20${encodeURIComponent(timestamp)}&body=${emailBody}`;
+      const mailtoLink = `mailto:${recipient}?subject=B1%20Listening%20Test%20-%20Submission%20${encodeURIComponent(timestamp)}&body=${emailBody}`;
 
       // Try to open email client
       window.location.href = mailtoLink;
@@ -2257,7 +2266,7 @@ body.warm-mode {
 
     // Copy Answers to Clipboard
     function copyAnswersToClipboard(timestamp, fullName) {
-      let text = `CAMBRIDGE ENGLISH A2 KET - MOCK TEST 1\nSubmission Time: ${timestamp}\n\n`;
+      let text = `B1 LISTENING TEST\nSubmission Time: ${timestamp}\n\n`;
       if (fullName || state.candidateName) {
         const nameToUse = fullName || state.candidateName || '';
         text = `Candidate Name: ${nameToUse}\n\n` + text;
