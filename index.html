@@ -135,7 +135,8 @@ body {
     justify-content: flex-start;
     gap: 8px;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
   }
   .settings-panel.collapsed .settings-grid {
     display: none;
@@ -203,33 +204,25 @@ body {
   gap: var(--space-8);
 }
 
-.font-slider {
-  width: 120px;
-  height: 6px;
-  -webkit-appearance: none;
-  appearance: none;
-  background: var(--color-secondary);
-  border-radius: var(--radius-sm);
-  outline: none;
+.font-step-btn {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
 }
 
-.font-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 18px;
-  height: 18px;
+.font-step-btn:hover {
   background: var(--color-primary);
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.font-slider::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  background: var(--color-primary);
-  border-radius: 50%;
-  cursor: pointer;
-  border: none;
+  color: var(--color-white);
+  border-color: var(--color-primary);
 }
 
 .font-value {
@@ -282,20 +275,7 @@ body {
   padding: var(--space-24);
   overflow-y: auto;
   transition: transform var(--duration-normal) var(--ease-standard), background-color var(--duration-normal) var(--ease-standard);
-}
-
-.sidebar.mobile-hidden {
-  transform: translateX(-100%);
-  position: fixed;
-  height: calc(100vh - 80px);
-  z-index: 50;
-}
-
-.sidebar.mobile-visible {
-  transform: translateX(0);
-  position: fixed;
-  height: calc(100vh - 80px);
-  z-index: 50;
+  flex-shrink: 0;
 }
 
 .mobile-menu-btn {
@@ -660,6 +640,20 @@ body {
   transition: background-color var(--duration-normal) var(--ease-standard);
 }
 
+.question-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  margin-bottom: 10px;
+  border-radius: 999px;
+  background: var(--color-bg-1);
+  color: var(--color-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .question-text {
   font-weight: var(--font-weight-medium);
   margin-bottom: var(--space-16);
@@ -685,6 +679,10 @@ body {
   min-height: 44px;
 }
 
+.options:not(.choice-grid) .option-label {
+  align-items: center;
+}
+
 .option-label:hover {
   border-color: var(--color-primary);
   background-color: var(--color-bg-1);
@@ -704,9 +702,18 @@ body {
   cursor: pointer;
 }
 
+.options:not(.choice-grid) .option-radio {
+  margin-top: 0;
+}
+
 .option-text {
   flex: 1;
   line-height: 1.5;
+}
+
+.options:not(.choice-grid) .option-text {
+  display: flex;
+  align-items: center;
 }
 
 .options.choice-grid {
@@ -743,6 +750,11 @@ body {
 
 .option-label.choice-card .option-chip {
   margin-bottom: 2px;
+}
+
+.option-label.part2-option .option-chip,
+.option-label.part4-option .option-chip {
+  margin-right: 6px;
 }
 
 .option-media {
@@ -951,12 +963,27 @@ body.warm-mode {
 /* Responsive Design */
 @media (max-width: 768px) {
   .settings-grid {
-    flex-direction: column;
-    align-items: stretch;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "color font";
+    gap: 8px;
+    align-items: center;
   }
 
   .setting-group {
     width: 100%;
+    min-width: 0;
+    gap: 6px;
+  }
+
+  .setting-group.sg-color {
+    grid-area: color;
+  }
+
+  .setting-group.sg-font {
+    grid-area: font;
+    justify-self: end;
   }
 
   .color-scheme-buttons {
@@ -970,6 +997,10 @@ body.warm-mode {
     height: calc(100vh - 80px);
     transform: translateX(-100%);
     z-index: 50;
+  }
+
+  .sidebar.mobile-hidden {
+    transform: translateX(-100%);
   }
 
   .sidebar.mobile-visible {
@@ -998,6 +1029,30 @@ body.warm-mode {
   }
 }
 
+@media (max-width: 900px) and (orientation: landscape) {
+  .settings-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .setting-group {
+    min-width: auto;
+    flex: 0 0 auto;
+  }
+
+  .setting-label {
+    display: none;
+  }
+
+  .font-value {
+    white-space: nowrap;
+  }
+}
+
 @media (max-width: 480px) {
   .settings-panel {
     padding: 4px 6px; /* further reduce vertical padding for smaller top bar */
@@ -1013,10 +1068,10 @@ body.warm-mode {
     font-size: var(--font-size-xs);
   }
 
-  /* Compact settings layout for very small screens */
+  .setting-label { display: none; }
+
   .settings-grid {
-    gap: 8px;
-    align-items: center;
+    gap: 6px;
   }
 
   .setting-group {
@@ -1024,9 +1079,7 @@ body.warm-mode {
     gap: 6px;
   }
 
-  .setting-label { display: none; }
-
-  .toggle-btn, .submit-btn, .color-btn, .start-test-btn {
+  .toggle-btn, .submit-btn, .color-btn, .start-test-btn, .font-step-btn {
     padding: 6px 10px;
     font-size: 13px;
     min-width: 64px;
@@ -1036,71 +1089,13 @@ body.warm-mode {
     padding: 4px 8px;
     font-size: 14px;
   }
-
-  /* Keep settings panel to at most two rows by using a 3-column grid (3+2 items => 2 rows) */
-  .settings-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-rows: auto auto;
-    grid-template-areas:
-      "time submit text"
-      "font color color";
-    gap: 6px;
-    overflow-x: hidden;
+  .setting-group.sg-color {
+    grid-area: color;
   }
-
-  /* Show font and color controls in the second row */
-  .font-size-control {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+  .setting-group.sg-font {
+    grid-area: font;
+    justify-self: end;
   }
-
-  .color-scheme-buttons {
-    display: flex;
-    gap: 6px;
-  }
-
-  .setting-label { display: none; }
-
-  .setting-group {
-    min-width: 0;
-    gap: 6px;
-    padding: 2px 4px;
-  }
-
-  .toggle-btn, .submit-btn, .color-btn, .start-test-btn {
-    padding: 4px 8px;
-    font-size: 12px;
-    min-width: 56px;
-  }
-
-  .timer-display {
-    padding: 2px 6px;
-    font-size: 13px;
-  }
-
-  /* assign grid areas explicitly */
-  .settings-grid .sg-time { grid-area: time; }
-  .settings-grid .sg-submit { grid-area: submit; }
-  .settings-grid .sg-text { grid-area: text; }
-  .settings-grid .sg-font { grid-area: font; }
-  .settings-grid .sg-color { grid-area: color; }
-}
-
-/* Show mobile font control on very small screens */
-@media (max-width: 480px) {
-  .mobile-font-control { display: block; }
-}
-
-/* Hide the top-bar font control on very small screens (we inject a local one into writing parts) */
-@media (max-width: 480px) {
-  .setting-group.sg-font { display: flex; justify-content: flex-end; margin-left: auto; }
-}
-
-/* When the settings grid switches to grid layout on very small screens, make sure the font group sits at the end */
-@media (max-width: 480px) {
-  .settings-grid .sg-font { justify-self: end; margin-left: 0; }
 }
 
 /* Autosave status badge */
@@ -1121,8 +1116,6 @@ body.warm-mode {
   color: var(--color-red-500);
   border: 1px solid rgba(192,21,47,0.12);
 }
-.mobile-font-control { margin-top: 8px; display: none; }
-.mobile-font-control input[type=range] { width: 140px; }
   </style>
 </head>
 <body>
@@ -1131,21 +1124,12 @@ body.warm-mode {
     <div class="settings-panel" id="settingsPanel" style="display: block;">
       <div class="settings-bar" id="settingsBar">
         <button id="settingsToggleBtn" class="toggle-btn" onclick="toggleSettingsPanel()">☰</button>
+        <button class="submit-btn" id="submitBtn" onclick="submitTest()">SUBMIT TEST</button>
+        <div id="autosaveStatus" style="margin-left:8px; display:inline-block;"></div>
       </div>
       <div class="settings-grid">
-        <div class="setting-group sg-submit">
-          <button class="submit-btn" id="submitBtn" onclick="submitTest()">SUBMIT TEST</button>
-          <div id="autosaveStatus" style="margin-left:8px; display:inline-block;"></div>
-        </div>
-        <div class="setting-group sg-submit">
-          <button class="toggle-btn" id="loadDraftBtn" onclick="loadEditorDraft()">Load Editor Draft</button>
-        </div>
-        <div class="setting-group sg-text">
-          <span class="setting-label">Text:</span>
-          <button class="toggle-btn" id="textToggleBtn" onclick="toggleText()">Hide Text</button>
-        </div>
         <div class="setting-group sg-color">
-          <span class="setting-label">Color:</span>
+          <span class="setting-label">Colour:</span>
           <div class="color-scheme-buttons">
             <button class="color-btn active" data-scheme="light" onclick="changeColorScheme('light')">Light</button>
             <button class="color-btn" data-scheme="dark" onclick="changeColorScheme('dark')">Dark</button>
@@ -1155,8 +1139,9 @@ body.warm-mode {
         <div class="setting-group sg-font">
           <span class="setting-label">Font Size:</span>
           <div class="font-size-control">
-            <input type="range" class="font-slider" id="fontSlider" min="12" max="24" value="14" oninput="changeFontSize(this.value)">
+            <button type="button" class="font-step-btn" id="fontDecreaseBtn" onclick="decreaseFontSize()" aria-label="Decrease text size">−</button>
             <span class="font-value" id="fontValue">14px</span>
+            <button type="button" class="font-step-btn" id="fontIncreaseBtn" onclick="increaseFontSize()" aria-label="Increase text size">+</button>
           </div>
         </div>
       </div>
@@ -1164,7 +1149,7 @@ body.warm-mode {
 
     <div class="main-layout">
       <!-- Sidebar Navigation -->
-      <aside class="sidebar mobile-hidden" id="sidebar">
+      <aside class="sidebar" id="sidebar">
         <ul class="part-nav">
           <li class="part-nav-item">
             <button class="part-nav-link" onclick="showPart(1)">Part 1 (Q1-7)</button>
@@ -1200,7 +1185,6 @@ body.warm-mode {
     // Application State
     const state = {
       currentPart: 1,
-      textVisible: true,
       fontSize: 14,
       colorScheme: 'light',
       uploadedImages: [],
@@ -1214,44 +1198,6 @@ body.warm-mode {
       }
     };
 
-    // If an editor saved a test JSON to localStorage under 'runTestDraft', convert and use it
-    (function(){
-      try {
-        const raw = localStorage.getItem('runTestDraft');
-        if (!raw) return;
-        const draft = JSON.parse(raw);
-        if (!draft || !Array.isArray(draft.questions)) return;
-        window.__pendingRunTestDraft = draft;
-        console.info('Queued editor draft from localStorage (runTestDraft)');
-      } catch (e) {
-        console.warn('Could not load runTestDraft from localStorage', e);
-      }
-    }());
-
-    // Manual loader to allow users to pull an editor-saved draft on demand
-    function loadEditorDraft() {
-      try {
-        const raw = localStorage.getItem('runTestDraft');
-        if (!raw) { alert('No editor draft found in localStorage (runTestDraft).'); return; }
-        const draft = JSON.parse(raw);
-        if (!draft || !Array.isArray(draft.questions)) { alert('Invalid draft format.'); return; }
-
-        if (!applyEditorDraftToTestData(draft)) {
-          alert('Could not apply editor draft.');
-          return;
-        }
-
-        state.currentPart = 1;
-        showPart(1);
-        const status = document.getElementById('autosaveStatus');
-        if (status) status.textContent = 'Editor draft loaded.';
-        console.info('Loaded editor draft into runner via manual loader (runTestDraft)');
-      } catch (e) {
-        console.warn('Could not load runTestDraft from localStorage', e);
-        alert('Failed to load draft (see console).');
-      }
-    }
-
     // Persistence helpers (save minimal state to localStorage)
     const STORAGE_KEY = 'ket_mock_test_v1';
 
@@ -1259,7 +1205,6 @@ body.warm-mode {
       try {
         const toSave = {
           currentPart: state.currentPart,
-          textVisible: state.textVisible,
           fontSize: state.fontSize,
           colorScheme: state.colorScheme,
           uploadedImages: state.uploadedImages, // contains dataUrl and order
@@ -1285,7 +1230,6 @@ body.warm-mode {
         const loaded = JSON.parse(raw);
         // restore fields if present
         if (loaded.currentPart) state.currentPart = Math.min(4, Math.max(1, Number(loaded.currentPart) || 1));
-        if (typeof loaded.textVisible === 'boolean') state.textVisible = loaded.textVisible;
         if (loaded.fontSize) state.fontSize = loaded.fontSize;
         if (loaded.colorScheme) state.colorScheme = loaded.colorScheme;
         if (Array.isArray(loaded.uploadedImages) && loaded.uploadedImages.length > 0) state.uploadedImages = loaded.uploadedImages;
@@ -1686,20 +1630,7 @@ body.warm-mode {
       return true;
     }
 
-    function applyPendingRunTestDraft() {
-      if (!window.__pendingRunTestDraft) return false;
-      const applied = applyEditorDraftToTestData(window.__pendingRunTestDraft);
-      if (applied) {
-        state.currentPart = 1;
-        console.info('Loaded editor draft into runner from localStorage (runTestDraft)');
-        window.__pendingRunTestDraft = null;
-        showPart(1);
-      }
-      return applied;
-    }
-
     const testData = createDefaultListeningTestData();
-    applyPendingRunTestDraft();
 
     // Image Upload Handler 
     function handleImageUpload(event) {
@@ -1852,23 +1783,6 @@ body.warm-mode {
     function showPart(partNumber) {
       state.currentPart = partNumber;
       const contentArea = document.getElementById('testContent');
-
-      // Ensure sidebar sits below the settings panel on mobile
-      const settingsPanel = document.getElementById('settingsPanel');
-      const sidebar = document.getElementById('sidebar');
-      if (sidebar && settingsPanel) {
-        sidebar.style.top = settingsPanel.offsetHeight + 'px';
-      }
-
-      // When viewing Part 4, always show the text area side-by-side
-      if (partNumber === 4) {
-        state.textVisible = true;
-        const btn = document.getElementById('textToggleBtn');
-        if (btn) {
-          btn.textContent = 'Hide Text';
-          btn.classList.remove('inactive');
-        }
-      }
       
       // Update navigation active state
       document.querySelectorAll('.part-nav-link').forEach((link, index) => {
@@ -1876,10 +1790,7 @@ body.warm-mode {
       });
 
       // Hide mobile menu after selection
-      if (window.innerWidth <= 768) {
-        document.getElementById('sidebar').classList.remove('mobile-visible');
-        document.getElementById('sidebar').classList.add('mobile-hidden');
-      }
+      syncSidebarState(false);
 
       // Render appropriate part
       switch(partNumber) {
@@ -1930,16 +1841,6 @@ body.warm-mode {
       };
     }
 
-    function makeListeningImageFallback(label) {
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-label="Missing image">
-        <rect width="480" height="360" rx="28" fill="#f3f4f6"/>
-        <rect x="40" y="40" width="400" height="280" rx="24" fill="#ffffff" stroke="#d1d5db" stroke-width="4" stroke-dasharray="14 10"/>
-        <text x="50%" y="46%" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#6b7280">Image unavailable</text>
-        <text x="50%" y="58%" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#6b7280">${escapeHtml(label || '')}</text>
-      </svg>`;
-      return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
-    }
-
     function handleListeningImageError(imgEl) {
       try {
         const label = imgEl.dataset.label || 'Option';
@@ -1960,11 +1861,12 @@ body.warm-mode {
         </span>
       ` : '';
       const choiceClass = mode === 'card' ? 'choice-card' : '';
+      const partClass = (partNumber === 2 || partNumber === 4) && mode !== 'card' ? `part${partNumber}-option` : '';
       const chip = `<span class="option-chip">${escapeHtml(key)}</span>`;
       const optionText = normalized.text ? `<span class="option-text">${escapeHtml(normalized.text)}</span>` : '';
 
       return `
-        <label class="option-label ${choiceClass} ${selected}">
+        <label class="option-label ${choiceClass} ${partClass} ${selected}">
           <input type="radio" name="p${partNumber}q${qNum}" value="${escapeHtml(key)}" class="option-radio" onchange="saveAnswer(${partNumber}, ${qNum}, '${key}')" ${saved === key ? 'checked' : ''}>
           ${chip}
           ${imageMarkup}
@@ -1975,13 +1877,17 @@ body.warm-mode {
 
     function renderMultipleChoicePart(partNumber, title, questions, savedAnswers, mode) {
       let html = `<div class="part-content"><h2 class="part-title">${escapeHtml(title)}</h2>`;
-      Object.keys(questions).forEach(qNum => {
+      Object.keys(questions).sort((a, b) => Number(a) - Number(b)).forEach(qNum => {
         const q = normalizeQuestionForRender(questions[qNum]);
         const saved = (savedAnswers && savedAnswers[qNum]) || '';
         const options = normalizeListeningOptions(q.options);
         const useCards = mode === 'card' || options.some(option => option.image);
+        const badge = (partNumber === 1 || partNumber === 2 || partNumber === 4)
+          ? `<div class="question-badge">Question ${escapeHtml(qNum)}</div>`
+          : '';
         html += `
           <div class="question-block">
+            ${badge}
             <div class="question-text">${escapeHtml(q.question)}</div>
             <div class="options ${useCards ? 'choice-grid' : ''}">
               ${options.map((option, index) => renderOptionMarkup(partNumber, qNum, option.label || optionKey(index), option, saved, useCards ? 'card' : 'list')).join('')}
@@ -2160,34 +2066,17 @@ body.warm-mode {
       return text.trim().split(/\s+/).filter(word => word.length > 0).length;
     }
 
-    // Toggle Text Visibility
-    function toggleText() {
-      state.textVisible = !state.textVisible;
-      const btn = document.getElementById('textToggleBtn');
-      btn.textContent = state.textVisible ? 'Hide Text' : 'Show Text';
-      btn.classList.toggle('inactive', !state.textVisible);
-      
-      // Update visibility of text areas in current view
-      const textAreas = document.querySelectorAll('.text-area');
-      textAreas.forEach(area => {
-        // Never hide Part 4 passage
-        if (area.classList.contains('part4-text')) {
-          area.classList.remove('hidden');
-        } else {
-          area.classList.toggle('hidden', !state.textVisible);
-        }
+    function formatPartAnswers(partNumber, label, questions, answers, lineBreak) {
+      const newline = lineBreak || '\n';
+      const qNums = Object.keys(questions || {}).sort((a, b) => Number(a) - Number(b));
+      let output = `${label}:${newline}`;
+
+      qNums.forEach(qNum => {
+        const value = answers && answers[qNum] != null ? String(answers[qNum]).trim() : '';
+        output += `Q${qNum}: ${value}${newline}`;
       });
 
-      // Toggle wrapper layout so questions expand to full width when text is hidden
-      document.querySelectorAll('.part-content-wrapper').forEach(wrapper => {
-        if (wrapper.classList.contains('part4-wrapper')) {
-          wrapper.classList.remove('text-hidden');
-        } else {
-          wrapper.classList.toggle('text-hidden', !state.textVisible);
-        }
-      });
-      // persist text visibility
-      saveState();
+      return output;
     }
 
     // Submit Test
@@ -2230,24 +2119,13 @@ body.warm-mode {
       let emailBody = `Candidate Name: ${encodeURIComponent(fullName)}%0D%0A`;
       emailBody += `B1 LISTENING TEST%0D%0ASubmission Time: ${encodeURIComponent(timestamp)}%0D%0A%0D%0A`;
 
-      // Parts 1-4
-      emailBody += `PART 1-4 (Multiple Choice):%0D%0A`;
-      for (let part = 1; part <= 4; part++) {
-        const partAnswers = state.answers[`part${part}`];
-        for (let qNum in partAnswers) {
-          emailBody += `Q${qNum}: ${partAnswers[qNum]}%0D%0A`;
-        }
-      }
-
-      // Part 5
-      emailBody += `%0D%0APART 5:%0D%0A`;
-      const part5Answers = state.answers.part5 || {};
-      // list questions in numeric order
-      Object.keys(part5Answers).sort((a,b) => Number(a)-Number(b)).forEach(qNum => {
-        emailBody += `Q${qNum}: ${part5Answers[qNum] || '(not answered)'}%0D%0A`;
-      });
-
-      // Parts 6 and 7 removed from this version
+      emailBody += formatPartAnswers(1, 'PART 1', testData.part1.questions, state.answers.part1, '%0D%0A');
+      emailBody += `%0D%0A`;
+      emailBody += formatPartAnswers(2, 'PART 2', testData.part2.questions, state.answers.part2, '%0D%0A');
+      emailBody += `%0D%0A`;
+      emailBody += formatPartAnswers(3, 'PART 3', testData.part3.questions, state.answers.part3, '%0D%0A');
+      emailBody += `%0D%0A`;
+      emailBody += formatPartAnswers(4, 'PART 4', testData.part4.questions, state.answers.part4, '%0D%0A');
 
       // Create mailto link with recipient set to timothy@english-world.it
       const recipient = 'timothy@english-world.it';
@@ -2272,21 +2150,13 @@ body.warm-mode {
         text = `Candidate Name: ${nameToUse}\n\n` + text;
       }
       
-      text += `PART 1-4 (Multiple Choice):\n`;
-      for (let part = 1; part <= 4; part++) {
-        const partAnswers = state.answers[`part${part}`];
-        for (let qNum in partAnswers) {
-          text += `Q${qNum}: ${partAnswers[qNum]}\n`;
-        }
-      }
-      
-      text += `\nPART 5:\n`;
-      const part5Answers = state.answers.part5 || {};
-      Object.keys(part5Answers).sort((a,b) => Number(a)-Number(b)).forEach(qNum => {
-        text += `Q${qNum}: ${part5Answers[qNum] || '(not answered)'}\n`;
-      });
-      
-      // Parts 6 and 7 removed from this version
+      text += formatPartAnswers(1, 'PART 1', testData.part1.questions, state.answers.part1, '\n');
+      text += `\n`;
+      text += formatPartAnswers(2, 'PART 2', testData.part2.questions, state.answers.part2, '\n');
+      text += `\n`;
+      text += formatPartAnswers(3, 'PART 3', testData.part3.questions, state.answers.part3, '\n');
+      text += `\n`;
+      text += formatPartAnswers(4, 'PART 4', testData.part4.questions, state.answers.part4, '\n');
       
       // Copy to clipboard
       navigator.clipboard.writeText(text).then(() => {
@@ -2298,19 +2168,23 @@ body.warm-mode {
 
     // Change Font Size
     function changeFontSize(size) {
-      state.fontSize = size;
-      document.body.style.fontSize = `${size}px`;
-      document.getElementById('fontValue').textContent = `${size}px`;
+      const nextSize = Math.max(12, Math.min(24, Number(size) || 14));
+      state.fontSize = nextSize;
+      document.body.style.fontSize = `${nextSize}px`;
+      const fontValue = document.getElementById('fontValue');
+      if (fontValue) fontValue.textContent = `${nextSize}px`;
       // Update sticky offsets in case settings panel height changed
       updatePart4Sticky();
       // persist font size change
       saveState();
-      // sync mobile slider if present
-      const m = document.getElementById('mobileFontSlider');
-      if (m) m.value = size;
-      // sync top-bar slider if present
-      const top = document.getElementById('fontSlider');
-      if (top) top.value = size;
+    }
+
+    function increaseFontSize() {
+      changeFontSize(Math.min(24, Number(state.fontSize || 14) + 1));
+    }
+
+    function decreaseFontSize() {
+      changeFontSize(Math.max(12, Number(state.fontSize || 14) - 1));
     }
 
     // Change Color Scheme
@@ -2340,12 +2214,32 @@ body.warm-mode {
     // Toggle Mobile Menu
     function toggleMobileMenu() {
       const sidebar = document.getElementById('sidebar');
+      if (!sidebar) return;
+      const isOpen = sidebar.classList.contains('mobile-visible');
+      syncSidebarState(!isOpen);
+    }
+
+    function syncSidebarState(forceOpen) {
+      const sidebar = document.getElementById('sidebar');
       const settingsPanel = document.getElementById('settingsPanel');
-      if (sidebar && settingsPanel) {
+      if (!sidebar) return;
+
+      if (window.innerWidth > 768) {
+        sidebar.classList.remove('mobile-visible', 'mobile-hidden');
+        sidebar.style.top = '';
+        return;
+      }
+
+      if (settingsPanel) {
         sidebar.style.top = settingsPanel.offsetHeight + 'px';
       }
-      sidebar.classList.toggle('mobile-visible');
-      sidebar.classList.toggle('mobile-hidden');
+
+      const shouldOpen = typeof forceOpen === 'boolean'
+        ? forceOpen
+        : sidebar.classList.contains('mobile-visible');
+
+      sidebar.classList.toggle('mobile-visible', shouldOpen);
+      sidebar.classList.toggle('mobile-hidden', !shouldOpen);
     }
 
     // Update Part 4 sticky top/height to account for the settings panel and viewport
@@ -2425,12 +2319,7 @@ body.warm-mode {
       }
 
       // Set initial font size
-      document.body.style.fontSize = `${state.fontSize}px`;
-      const mobileSlider = document.getElementById('mobileFontSlider');
-      if (mobileSlider) mobileSlider.value = state.fontSize;
-      const topSlider = document.getElementById('fontSlider');
-      if (topSlider) topSlider.value = state.fontSize;
-      const fv = document.getElementById('fontValue'); if (fv) fv.textContent = `${state.fontSize}px`;
+      changeFontSize(state.fontSize);
 
       // apply color scheme if restored
       if (restored) {
@@ -2439,17 +2328,11 @@ body.warm-mode {
       }
 
       // Ensure sidebar position accounts for the settings panel height
-      const sidebar = document.getElementById('sidebar');
-      const settingsPanel = document.getElementById('settingsPanel');
-      if (sidebar && settingsPanel) {
-        sidebar.style.top = settingsPanel.offsetHeight + 'px';
-      }
+      syncSidebarState(false);
 
       // Update sidebar top on resize and update Part 4 sticky sizing
       window.addEventListener('resize', () => {
-        if (sidebar && settingsPanel) {
-          sidebar.style.top = settingsPanel.offsetHeight + 'px';
-        }
+        syncSidebarState(false);
         updatePart4Sticky();
       });
 
