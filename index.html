@@ -1776,6 +1776,7 @@ body.warm-mode {
 
         if (q.correctAnswer != null) entry.correctAnswer = q.correctAnswer;
         if (q.answer != null) entry.answer = q.answer;
+        if (q.suffix != null) entry.suffix = q.suffix;
 
         if (q.part && q.questionNumber != null) {
           const qnum = Number(q.questionNumber);
@@ -2328,48 +2329,36 @@ body.warm-mode {
       const data = testData.part3;
       const g = data.questions;
       const saved = state.answers.part3 || {};
+      const currentId = getCurrentListeningTestId();
+      const isStonebridge = currentId === DEFAULT_LISTENING_TEST_ID
+        || (g[14] && /The house was built in the/i.test(g[14].question || ''));
       let html = `<div class="part-content"><h2 class="part-title">${escapeHtml(data.title)}</h2>`;
       html += `
         <div class="question-block">
           <div class="question-text">Questions 14-19</div>
           <div class="preview-answer-note">For each question, write the correct answer in the gap. Write one or two words or a number or a date or a time.</div>
         </div>
+      `;
+      if (!isStonebridge) {
+        html += `
         <div class="question-block">
           <div class="question-text">You will hear a teacher giving some information about a school photography competition.</div>
         </div>
+        `;
+      }
+      html += `
         <div class="gap-text">
-          <div style="text-align:center; font-weight:700; font-size:1.15em; margin-bottom:18px;">School photography competition</div>
+          <div style="text-align:center; font-weight:700; font-size:1.15em; margin-bottom:18px;">${escapeHtml(isStonebridge ? 'Stonebridge House' : 'School photography competition')}</div>
+          ${Object.keys(g).sort((a, b) => Number(a) - Number(b)).map(qNum => {
+            const question = g[qNum] || {};
+            const suffix = question.suffix != null ? String(question.suffix) : '.';
+            return `
           <div class="gap-line">
-            <span>The subject of this year’s competition is</span>
-            <span class="gap-input-wrapper"><input type="text" class="gap-input" name="p3q14" id="p3q14-input" value="${escapeHtml(saved[14] || '')}" placeholder="14" onblur="saveTextAnswer(3, 14, this.value)" /></span>
-            <span class="gap-inline-suffix">.</span>
-          </div>
-          <div class="gap-line">
-            <span>Photos must show some</span>
-            <span class="gap-input-wrapper"><input type="text" class="gap-input" name="p3q15" id="p3q15-input" value="${escapeHtml(saved[15] || '')}" placeholder="15" onblur="saveTextAnswer(3, 15, this.value)" /></span>
-            <span class="gap-inline-suffix">.</span>
-          </div>
-          <div class="gap-line">
-            <span>A local</span>
-            <span class="gap-input-wrapper"><input type="text" class="gap-input" name="p3q16" id="p3q16-input" value="${escapeHtml(saved[16] || '')}" placeholder="16" onblur="saveTextAnswer(3, 16, this.value)" /></span>
-            <span class="gap-inline-suffix"> will judge the competition.</span>
-          </div>
-          <div class="gap-line">
-            <span>First prize is a photography</span>
-            <span class="gap-input-wrapper"><input type="text" class="gap-input" name="p3q17" id="p3q17-input" value="${escapeHtml(saved[17] || '')}" placeholder="17" onblur="saveTextAnswer(3, 17, this.value)" /></span>
-            <span class="gap-inline-suffix">.</span>
-          </div>
-          <div class="gap-line">
-            <span>Send your entries in by</span>
-            <span class="gap-input-wrapper"><input type="text" class="gap-input" name="p3q18" id="p3q18-input" value="${escapeHtml(saved[18] || '')}" placeholder="18" onblur="saveTextAnswer(3, 18, this.value)" /></span>
-            <span class="gap-inline-suffix"> at the latest.</span>
-          </div>
-          <div class="gap-line">
-            <span>School secretary’s email address is</span>
-            <span class="gap-inline-prefix">k.</span>
-            <span class="gap-input-wrapper gap-input-wrapper--compact"><input type="text" class="gap-input" name="p3q19" id="p3q19-input" value="${escapeHtml(saved[19] || '')}" placeholder="19" onblur="saveTextAnswer(3, 19, this.value)" /></span>
-            <span class="gap-inline-suffix">@school.com</span>
-          </div>
+            <span>${escapeHtml(question.question || '')}</span>
+            <span class="gap-input-wrapper"><input type="text" class="gap-input" name="p3q${escapeHtml(qNum)}" id="p3q${escapeHtml(qNum)}-input" value="${escapeHtml(saved[qNum] || '')}" placeholder="${escapeHtml(qNum)}" onblur="saveTextAnswer(3, ${Number(qNum)}, this.value)" /></span>
+            <span class="gap-inline-suffix">${escapeHtml(suffix)}</span>
+          </div>`;
+          }).join('')}
         </div>
       `;
       html += '</div>';
